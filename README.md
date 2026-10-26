@@ -1,20 +1,16 @@
-### Запуск инкрементальных бэкапов greenplum по расписанию
+### Local SSH Tunnel with user service
 
-#### Шаг 1: Клонировать репозиторий в папку gpadmin с сервисным ключом на master:
-
-```
-sudo su gpadmin && cd ~
-```
+#### Cloning:
 
 ```
-git clone <corporate repo>:dp-data-platform/ASKONA_GP/gp_backup_scripts.git
+git clone https://github.com/codesshaman/tuneller.git
 ```
 
 ```
-cd gp_backup_scripts
+cd tuneller
 ```
 
-#### Шаг 2: Записать своего пользователя в git config:
+#### Create environment:
 
 ```
 make env
@@ -24,21 +20,40 @@ make env
 nano .env
 ```
 
-Ввести своё имя пользователя и корпоративную почту. Сохранить.
+Change all necessary variables and parameters.
 
-Заполнить конфиг git:
+#### Create ssh tunnel script
 
 ```
-make git
+make
 ```
 
-#### Шаг 3: Создать systemd unit и systemd timer:
+Check your script name file in ``/usr/local/bin/``.
+
+#### Create user service
 
 ```
 make service
 ```
 
+It's all. Service will be created and launch ssh tunnel every time after your first login.
+
+#### Checing
+
 ```
-make timer
+systemctl --user status <your script name>.service
 ```
-# tuneller
+
+#### Remove tuneller script
+
+```
+make clean
+```
+
+#### Remove service
+
+```
+systemctl --user stop <your script name>.service
+systemctl --user disable --now <your script name>..service
+systemctl --user daemon-reload
+```
